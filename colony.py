@@ -29,14 +29,11 @@ class Colony(object):
         )) for place in self.list_init_places]
 
     def choice_next_place(self, ant):
-        # print "ant.value_place(): ", ant.value_place()
         paths = self.world.graph[ant.value_place()]
-        # print "paths; ", paths
         path_pos = random.randint(0, len(paths) - 1)
-        # print "path_pos: ", path_pos
         return paths[path_pos]
 
-    def nose(self, ant):
+    def each_ant(self, ant):
         print "places traveled: ", ant.places_traveled
         next_place = self.choice_next_place(ant)
         if not ant.if_was_visited(next_place):
@@ -50,19 +47,12 @@ class Colony(object):
 
     def forwarding(self):
         for ant in self.list_init_ants:
-            # print "places traveled: ", ant.places_traveled
-            # next_place = self.choice_next_place(ant)
-            # if not ant.if_was_visited(next_place):
-            #     ant.set_new_data(data=(
-            #         next_place, self.world.graph[next_place],
-            #         self.world.pair_points[next_place]))
-            # print "ant next: ", ant.print_ant()
             while True:
                 print "ant.init_data: ", ant.init_data
                 time.sleep(0.5)
-                print "new ant in same possssss"
+                print "new ant in same position"
                 ant.set_data(data=ant.init_data)
-                antt = self.nose(ant)
+                antt = self.each_ant(ant)
                 while antt:
-                    antt = self.nose(ant)
+                    antt = self.each_ant(ant)
                 ant.del_places_traveled()
