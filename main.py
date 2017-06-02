@@ -1,5 +1,3 @@
-import time
-
 from draw import Draw
 from mapp import Map
 from colony import Colony
@@ -28,8 +26,3 @@ window.changecolor_radio(5)
 for ant in a.list_init_ants:
     point = window.draw_point(ant.localized()[0], ant.localized()[1])
 a.forwarding()
-
-    # print "asoasas"
-    # time.sleep(0.5)
-    # print "asoasas--------------------"
-    # window.delete_point(point)
