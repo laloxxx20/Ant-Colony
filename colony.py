@@ -17,7 +17,7 @@ class Colony(object):
     def __init__(self, *args, **kwargs):
         if 'world' in kwargs:
             self.world = kwargs['world']
-            self.how_many_places = len(self.world.graph) 
+            self.how_many_places = len(self.world.graph)
 
     def init_colony(self, how_many_places_init=1):
         if how_many_places_init > len(self.world.graph):
@@ -75,33 +75,42 @@ class Colony(object):
             # if ant.data.value == ant.init_data.value:
             #     print "endedddddddddddddddddddddddddddddddddddddddd"
             #    raise "asdasds"
-            return ant
+            return ant, len(ant.places_traveled)
         else:
             self.world.places[next_place].evaporate()
-        return False
+        return False, len(ant.places_traveled)
 
-    def forwarding(self):        
+    def forwarding(self):
+        len_places_taveled = 0
         comm = MPI.COMM_WORLD
         rank = comm.Get_rank()
 
         # for ant in self.list_init_ants:
         ant = self.list_init_ants[rank]
 
-        while len(ant.places_traveled) != self.how_many_places - 1:
+        start = time.time()
+        while len_places_taveled != self.how_many_places - 1:
             print "########################################################"
             print "rank: ", rank
             print "self.how_many_places - 1: ", self.how_many_places - 1
-            print "len(ant.places_traveled): ", len(ant.places_traveled)
+            print "len_places_taveled: ", len_places_taveled
             print "########################################################"
             time.sleep(0.5)
             print "new ant in same position"
             ant.set_data(data=ant.init_data)
             antt = self.each_ant(ant)
             while antt:
-                antt = self.each_ant(ant)
+                antt, len_places_taveled = self.each_ant(ant)
             ant.del_places_traveled()
 
             for place in self.world.places:
                 place.print_place()
+        end = time.time()
+
+        if len_places_taveled == self.how_many_places - 1:
+            print "str(end - start): ", str(end - start)
+            with open("times.txt","a+") as f:
+                f.write(str(end - start) + '\n')
 
         comm.Disconnect()
+

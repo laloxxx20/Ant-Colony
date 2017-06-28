@@ -32,9 +32,11 @@ for i, place in enumerate(world.places):
 
 a = Colony(world=world)
 # a.init_colony(how_many_places_init=len(world.graph) - 5)
-a.init_colony(4)
+a.init_colony(how_many_places_init=4)
+
 window.changecolor_point("green")
 window.changecolor_radio(5)
 for ant in a.list_init_ants:
     point = window.draw_point(ant.localized()[0], ant.localized()[1])
+
 a.forwarding()
