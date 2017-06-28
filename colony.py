@@ -1,6 +1,8 @@
 import time
 import random
 
+from mpi4py import MPI
+
 from ant import Ant
 
 
@@ -10,10 +12,12 @@ class Colony(object):
     list_init_ants = []
     how_many_places_init = 1  # in how many places the ant is going to start
     black_list = [[]]  # list of places to not travel
+    how_many_places = 1
 
     def __init__(self, *args, **kwargs):
         if 'world' in kwargs:
             self.world = kwargs['world']
+            self.how_many_places = len(self.world.graph) 
 
     def init_colony(self, how_many_places_init=1):
         if how_many_places_init > len(self.world.graph):
@@ -64,27 +68,40 @@ class Colony(object):
             # new place visited and puttin phero in that place
             self.world.places[next_place].set_value_pheromone(0.1, ant.data)
             print "ant next: ", ant.print_ant()
-            time.sleep(0.5)
+            time.sleep(0.7)
             print "ant.data.value: ", ant.data.value
             print "ant.init_data.value: ", ant.init_data.value
-            if ant.data.value == ant.init_data.value:
-                    print "endedddddddddddddddddddddddddddddddddddddddd"
-                    raise "asdasds"
+            print "-------------------------------------------------------------------"
+            # if ant.data.value == ant.init_data.value:
+            #     print "endedddddddddddddddddddddddddddddddddddddddd"
+            #    raise "asdasds"
             return ant
         else:
             self.world.places[next_place].evaporate()
         return False
 
-    def forwarding(self):
-        for ant in self.list_init_ants:
-            while True:
-                time.sleep(0.5)
-                print "new ant in same position"
-                ant.set_data(data=ant.init_data)
-                antt = self.each_ant(ant)
-                while antt:
-                    antt = self.each_ant(ant)
-                ant.del_places_traveled()
+    def forwarding(self):        
+        comm = MPI.COMM_WORLD
+        rank = comm.Get_rank()
 
-                for place in self.world.places:
-                    place.print_place()
+        # for ant in self.list_init_ants:
+        ant = self.list_init_ants[rank]
+
+        while len(ant.places_traveled) != self.how_many_places - 1:
+            print "########################################################"
+            print "rank: ", rank
+            print "self.how_many_places - 1: ", self.how_many_places - 1
+            print "len(ant.places_traveled): ", len(ant.places_traveled)
+            print "########################################################"
+            time.sleep(0.5)
+            print "new ant in same position"
+            ant.set_data(data=ant.init_data)
+            antt = self.each_ant(ant)
+            while antt:
+                antt = self.each_ant(ant)
+            ant.del_places_traveled()
+
+            for place in self.world.places:
+                place.print_place()
+
+        comm.Disconnect()
