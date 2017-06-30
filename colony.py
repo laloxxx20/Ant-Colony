@@ -10,10 +10,12 @@ class Colony(object):
     list_init_ants = []
     how_many_places_init = 1  # in how many places the ant is going to start
     black_list = [[]]  # list of places to not travel
+    how_many_places = 1
 
     def __init__(self, *args, **kwargs):
         if 'world' in kwargs:
             self.world = kwargs['world']
+            self.how_many_places = len(self.world.graph) 
 
     def init_colony(self, how_many_places_init=1):
         if how_many_places_init > len(self.world.graph):
@@ -64,7 +66,7 @@ class Colony(object):
             # new place visited and puttin phero in that place
             self.world.places[next_place].set_value_pheromone(0.1, ant.data)
             print "ant next: ", ant.print_ant()
-            time.sleep(0.5)
+            time.sleep(0.7)
             print "ant.data.value: ", ant.data.value
             print "ant.init_data.value: ", ant.init_data.value
             if ant.data.value == ant.init_data.value:
@@ -77,7 +79,8 @@ class Colony(object):
 
     def forwarding(self):
         for ant in self.list_init_ants:
-            while True:
+
+            while len(ant.places_traveled) != self.how_many_places - 1:
                 time.sleep(0.5)
                 print "new ant in same position"
                 ant.set_data(data=ant.init_data)
