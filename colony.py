@@ -66,28 +66,42 @@ class Colony(object):
             # new place visited and puttin phero in that place
             self.world.places[next_place].set_value_pheromone(0.1, ant.data)
             print "ant next: ", ant.print_ant()
-            time.sleep(0.7)
+            # time.sleep(0.7)
             print "ant.data.value: ", ant.data.value
             print "ant.init_data.value: ", ant.init_data.value
             if ant.data.value == ant.init_data.value:
                     print "endedddddddddddddddddddddddddddddddddddddddd"
                     raise "asdasds"
-            return ant
+            return ant, len(ant.places_traveled)
         else:
             self.world.places[next_place].evaporate()
-        return False
+        return False, len(ant.places_traveled)
 
     def forwarding(self):
+        len_places_taveled = 0
         for ant in self.list_init_ants:
 
-            while len(ant.places_traveled) != self.how_many_places - 1:
-                time.sleep(0.5)
+            start = time.time()
+            while len_places_taveled != self.how_many_places:
+                # time.sleep(0.5)
                 print "new ant in same position"
                 ant.set_data(data=ant.init_data)
-                antt = self.each_ant(ant)
+                antt, len_places_taveled = self.each_ant(ant)
                 while antt:
-                    antt = self.each_ant(ant)
+                    antt, len_places_taveled = self.each_ant(ant)
                 ant.del_places_traveled()
 
                 for place in self.world.places:
                     place.print_place()
+
+                print "########################################################"
+                print "self.how_many_places: ", self.how_many_places
+                print "len_places_taveled: ", len_places_taveled
+                print "########################################################"
+
+            end = time.time()
+
+            if len_places_taveled == self.how_many_places:
+                print "str(end - start): ", str(end - start)
+                with open("times.txt","a+") as f:
+                    f.write(str(end - start) + '\n')
