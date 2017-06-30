@@ -68,7 +68,7 @@ class Colony(object):
             # new place visited and puttin phero in that place
             self.world.places[next_place].set_value_pheromone(0.1, ant.data)
             print "ant next: ", ant.print_ant()
-            time.sleep(0.7)
+            # time.sleep(0.7)
             print "ant.data.value: ", ant.data.value
             print "ant.init_data.value: ", ant.init_data.value
             print "-------------------------------------------------------------------"
@@ -95,7 +95,7 @@ class Colony(object):
             print "self.how_many_places - 1: ", self.how_many_places - 1
             print "len_places_taveled: ", len_places_taveled
             print "########################################################"
-            time.sleep(0.5)
+            # time.sleep(0.5)
             print "new ant in same position"
             ant.set_data(data=ant.init_data)
             antt = self.each_ant(ant)
